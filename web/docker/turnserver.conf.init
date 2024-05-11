@@ -1,0 +1,14 @@
+domain=$DOMAIN
+realm=$DOMAIN
+server-name=$DOMAIN
+
+fingerprint
+
+#listening-ip=0.0.0.0
+listening-port=3477
+
+external-ip=$SERVER_IP
+
+user=melodymine:melodymine
+lt-cred-mech
+

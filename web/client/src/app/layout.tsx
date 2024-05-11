@@ -1,10 +1,13 @@
 import './globals.css'
-import type {Metadata} from 'next'
+import type {Metadata, Viewport} from 'next'
 import {Inter} from 'next/font/google'
 import Navbar from "@/components/Navbar";
 import AuthProvider from "@/components/AuthProvider";
 import ErrorBox from "@/components/Porgress/ErrorBox";
 
+export const viewport: Viewport = {
+    themeColor: '#1F7265',
+}
 
 const inter = Inter({subsets: ['latin']})
 
