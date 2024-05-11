@@ -35,8 +35,8 @@ services:
 
   nginx:
     image: nginx:latest
-    ports:
-      - "${WEBSERVER_PORT}:80"
+#    ports:
+#      - "${WEBSERVER_PORT}:80"
     volumes:
       - ./nginx.conf:/etc/nginx/nginx.conf
     depends_on:
