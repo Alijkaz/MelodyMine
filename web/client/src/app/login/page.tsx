@@ -11,12 +11,8 @@ import Settings from "@/config";
 export const metadata: Metadata = {
     title: 'Login',
 }
-<<<<<<< HEAD
 const Page = async () => {
     const showForm = false;
-=======
-const Page = async ({searchParams}: { searchParams?: { start?: boolean } }) => {
->>>>>>> git/master
     const session = await getAuthSession()
     if (session?.user) redirect(`/hub${searchParams?.start ? "?start=true" : ""}`)
 

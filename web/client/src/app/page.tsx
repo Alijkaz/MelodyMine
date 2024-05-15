@@ -11,13 +11,8 @@ export default async function Home() {
             <div className="flex-[3] flex flex-col justify-center gap-[20px] pr-5 md:pr-20">
                 <h1 className="text-[55px] sm:text-[74px] text-white font-bold">گیم آپ</h1>
                 <div className="flex items-center">
-<<<<<<< HEAD
                     <Image src="/line.png" alt="line" width={40} height={5} className="hidden sm:block ml-3"/>
                     <h2 className="text-xl text-[#DDB216]">به راحتی با دوستاتون تو ماینکرفت صحبت کنید :)</h2>
-=======
-                    <Image src="/line.png" alt="line" width={40} height={5} className="hidden sm:block mr-3"/>
-                    <h2 className="text-2xl text-[#DDB216] ">Talk Together in Minecraft Server</h2>
->>>>>>> git/master
                 </div>
                 <p className="text-[20px] text-[#D3D3D3FF] text-justify">
                     با وویس چت گیم آپ میتونید یک تجربه جدید از ماینکرفت داشته باشید که قبلا هیچوقت نداشتید! به راحتی روی شروع وویس چت کلیک کنید و وارد دنیای جدیدی از ماینکرفت بشید و با دوستانتون صحبت کنید.
