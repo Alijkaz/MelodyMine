@@ -9,7 +9,7 @@ try {
     initializeDatabase().then(() => {
         const app = express()
         const server = http.createServer(app)
-        const PORT = 4000
+        const PORT = process.env.PORT
 
         const io = new Server(server, {
             cors: {
@@ -17,8 +17,8 @@ try {
                 credentials: false,
                 allowedHeaders: "*"
             },
-            pingInterval: 600000,
-            pingTimeout: 600000,
+            // pingInterval: 600000,
+            // pingTimeout: 600000,
             transports: ["websocket"],
             allowEIO3: true,
         })

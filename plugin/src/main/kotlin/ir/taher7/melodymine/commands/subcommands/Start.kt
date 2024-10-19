@@ -1,30 +1,35 @@
 package ir.taher7.melodymine.commands.subcommands
 
-import com.cryptomorin.xseries.ReflectionUtils
+
+import com.cryptomorin.xseries.reflection.XReflection
 import ir.taher7.melodymine.commands.SubCommand
 import ir.taher7.melodymine.core.MelodyManager
 import ir.taher7.melodymine.storage.Messages
-import ir.taher7.melodymine.utils.Adventure.sendMessage
+import ir.taher7.melodymine.utils.Adventure.sendComponent
 import ir.taher7.melodymine.utils.Utils
+import org.bukkit.command.CommandSender
 import org.bukkit.entity.Player
 
 class Start : SubCommand() {
 
 
-
     override var name = "start"
-    override var description = Messages.getMessageString("commands.start.description")
+    override var description = Messages.getMessage("commands.start.description")
     override var syntax = "/melodymine start"
     override var permission = "melodymine.start"
 
-    override fun handler(player: Player, args: Array<out String>) {
+    override fun handler(player: CommandSender, args: Array<out String>) {
+        if (player !is Player) {
+            player.sendComponent(Messages.getMessage("errors.only_players"))
+            return
+        }
 
         if (Utils.checkPlayerCoolDown(player)) return
         when (args.size) {
             2 -> {
-                if (ReflectionUtils.supports(13) && args[1].equals("qrcode", true)) {
+                if (XReflection.supports(13) && args[1].equals("qrcode", true)) {
                     if (!player.hasPermission("melodymine.qrcode")) {
-                        player.sendMessage(Messages.getMessage("errors.no_permission"))
+                        player.sendComponent(Messages.getMessage("errors.no_permission"))
                         return
                     }
 //                    if (ReflectionUtils.supports(9) && player.inventory.itemInOffHand.type == Material.AIR) {
@@ -41,7 +46,7 @@ class Start : SubCommand() {
                             }
                         }
                     }
-                    player.sendMessage(Messages.getMessage("commands.start.hot_bar"))
+                    player.sendComponent(Messages.getMessage("commands.start.hot_bar"))
 
                 }
 
@@ -61,13 +66,13 @@ class Start : SubCommand() {
     }
 
     private fun sendStartHelpMessage(player: Player) {
-        player.sendMessage(Messages.getMessage("general.content_header"))
+        player.sendComponent(Messages.getMessage("general.content_header"))
         Messages.getHelpMessage(
             "commands.start.help_message",
             hashMapOf("{SYNTAX}" to syntax)
         ).forEach { message ->
-            player.sendMessage(message)
+            player.sendComponent(message)
         }
-        player.sendMessage(Messages.getMessage("general.content_footer"))
+        player.sendComponent(Messages.getMessage("general.content_footer"))
     }
 }

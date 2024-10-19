@@ -2,6 +2,9 @@ package ir.taher7.melodymine.utils
 
 import ir.taher7.melodymine.MelodyMine
 import ir.taher7.melodymine.storage.Messages
+import ir.taher7.melodymine.utils.Adventure.sendComponent
+import ir.taher7.melodymine.utils.Utils.parsePlaceholder
+import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.audience.Audience
 import net.kyori.adventure.bossbar.BossBar
 import net.kyori.adventure.platform.bukkit.BukkitAudiences
@@ -27,10 +30,10 @@ object Adventure {
         miniMessage = MiniMessage.builder().tags(
             TagResolver.resolver(
                 TagResolver.standard(),
-                Placeholder.parsed("prefix", Messages.getMessageString("general.prefix")),
-                Placeholder.parsed("text_color", Messages.getMessageString("general.text_color")),
-                Placeholder.parsed("hover_color", Messages.getMessageString("general.hover_color")),
-                Placeholder.parsed("highlight_color", Messages.getMessageString("general.highlight_color")),
+                Placeholder.parsed("prefix", Messages.getMessage("general.prefix")),
+                Placeholder.parsed("text_color", Messages.getMessage("general.text_color")),
+                Placeholder.parsed("hover_color", Messages.getMessage("general.hover_color")),
+                Placeholder.parsed("highlight_color", Messages.getMessage("general.highlight_color")),
             ),
         ).build()
     }
@@ -39,16 +42,15 @@ object Adventure {
         return audience.player(this)
     }
 
-
-    fun CommandSender.sendMessage(component: Component) {
-        audience.sender(this).sendMessage(component)
+    fun CommandSender.sendComponent(string: String) {
+        val parseString = parsePlaceholder(if (this is Player) this else null, string)
+        audience.sender(this).sendMessage(parseString.toComponent())
     }
 
-
-    fun Player.sendActionbar(component: Component) {
-        this.audience().sendActionBar(component)
+    fun Player.sendActionbar(string: String) {
+        val parseString = parsePlaceholder(this, string)
+        this.audience().sendActionBar(parseString.toComponent())
     }
-
 
     fun String.toComponent(vararg placeholders: TagResolver): Component {
         return miniMessage.deserialize(this, *placeholders)

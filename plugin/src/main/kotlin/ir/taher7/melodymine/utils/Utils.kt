@@ -1,6 +1,7 @@
 package ir.taher7.melodymine.utils
 
-import com.cryptomorin.xseries.ReflectionUtils
+
+import com.cryptomorin.xseries.reflection.XReflection
 import ir.taher7.melodymine.MelodyMine
 import ir.taher7.melodymine.commands.SubCommand
 import ir.taher7.melodymine.core.MelodyManager
@@ -8,13 +9,15 @@ import ir.taher7.melodymine.models.MelodyPlayer
 import ir.taher7.melodymine.storage.Messages
 import ir.taher7.melodymine.storage.Settings
 import ir.taher7.melodymine.storage.Storage
-import ir.taher7.melodymine.utils.Adventure.sendMessage
+import ir.taher7.melodymine.utils.Adventure.sendComponent
 import ir.taher7.melodymine.utils.Adventure.showTitle
 import ir.taher7.melodymine.utils.Adventure.toComponent
+import me.clip.placeholderapi.PlaceholderAPI
 import net.kyori.adventure.title.Title
 import org.bukkit.ChatColor
 import org.bukkit.Material
 import org.bukkit.NamespacedKey
+import org.bukkit.command.CommandSender
 import org.bukkit.enchantments.Enchantment
 import org.bukkit.entity.Player
 import org.bukkit.inventory.ItemFlag
@@ -33,11 +36,13 @@ object Utils {
 
 
     fun sendHelpMessage(player: Player) {
-        player.sendMessage(Messages.getMessage("general.content_header"))
-        player.sendMessage("")
+
+        player.sendComponent(Messages.getMessage("general.content_header"))
+
+        player.sendComponent("")
         Storage.subCommands.forEach { subCommand: SubCommand ->
             if (player.hasPermission(subCommand.permission)) {
-                player.sendMessage(
+                player.sendComponent(
                     Messages.getMessage(
                         "general.help_line", hashMapOf(
                             "{SYNTAX}" to subCommand.syntax,
@@ -47,8 +52,8 @@ object Utils {
                 )
             }
         }
-        player.sendMessage("")
-        player.sendMessage(Messages.getMessage("general.content_footer"))
+        player.sendComponent("")
+        player.sendComponent(Messages.getMessage("general.content_footer"))
     }
 
     fun getVerifyCode(length: Int = 20): String {
@@ -74,10 +79,16 @@ object Utils {
                     cancel()
                 } else {
                     if (Settings.forceVoiceTitle) {
+
+                        val forceVoiceTitleText =
+                            parsePlaceholder(player.player, Messages.getMessage("force_voice.title"))
+                        val forceVoiceSubTitleText =
+                            parsePlaceholder(player.player, Messages.getMessage("force_voice.subtitle"))
+
                         player.player?.showTitle(
                             Title.title(
-                                Messages.getMessage("force_voice.title"),
-                                Messages.getMessage("force_voice.subtitle"),
+                                forceVoiceTitleText.toComponent(),
+                                forceVoiceSubTitleText.toComponent(),
                                 Title.Times.times(
                                     Duration.ofMillis(100),
                                     Duration.ofDays(365),
@@ -116,7 +127,7 @@ object Utils {
             override fun run() {
                 Storage.onlinePlayers.values.forEach { melodyPlayer ->
                     if (melodyPlayer.player?.hasPermission("melodymine.toggle") == true && melodyPlayer.isToggle) {
-                        melodyPlayer.player?.sendMessage(message.replace("{PLAYER}", player.name).toComponent())
+                        melodyPlayer.player?.sendComponent(message.replace("{PLAYER}", player.name))
                     }
                 }
             }
@@ -139,7 +150,7 @@ object Utils {
         mapMeta.addItemFlags(ItemFlag.HIDE_ENCHANTS)
         mapMeta.addItemFlags(ItemFlag.HIDE_POTION_EFFECTS)
 
-        if (ReflectionUtils.supports(14)) {
+        if (XReflection.supports(14)) {
             mapMeta.persistentDataContainer.set(
                 NamespacedKey(MelodyMine.instance, "qrcode"),
                 PersistentDataType.INTEGER,
@@ -152,7 +163,7 @@ object Utils {
     }
 
     fun isMap(item: ItemStack): Boolean {
-        if (ReflectionUtils.supports(14)) {
+        if (XReflection.supports(14)) {
             val mapMeta = item.itemMeta ?: return false
             mapMeta.persistentDataContainer.get(
                 NamespacedKey(MelodyMine.instance, "qrcode"),
@@ -161,7 +172,7 @@ object Utils {
             return true
         } else {
 
-            if (ReflectionUtils.supports(13)) {
+            if (XReflection.supports(13)) {
                 if (item.type != Material.FILLED_MAP) return false
             } else {
                 if (item.type != Material.MAP) return false
@@ -215,7 +226,7 @@ object Utils {
                     targetPlayer.pendingTask = null
 
                     if (isQuit) MelodyManager.endPendingCall(melodyPlayer, targetPlayer)
-                    targetPlayer.player?.sendMessage(Messages.getMessage("commands.call.call_pending_end"))
+                    targetPlayer.player?.sendComponent(Messages.getMessage("commands.call.call_pending_end"))
                 }
 
                 if (melodyPlayer.isInCall) {
@@ -225,7 +236,7 @@ object Utils {
                     targetPlayer.isInCall = false
                     targetPlayer.callTarget = null
                     if (isQuit) MelodyManager.endCall(melodyPlayer, targetPlayer)
-                    targetPlayer.player?.sendMessage(
+                    targetPlayer.player?.sendComponent(
                         Messages.getMessage(
                             "commands.call.call_end",
                             hashMapOf("{PLAYER}" to melodyPlayer.name)
@@ -239,7 +250,7 @@ object Utils {
 
     fun checkPlayerCoolDown(player: Player): Boolean {
         if (Storage.commandCoolDown.containsKey(player.uniqueId) && (System.currentTimeMillis() - Storage.commandCoolDown[player.uniqueId]!!) <= Settings.commandsCoolDown) {
-            player.sendMessage(
+            player.sendComponent(
                 Messages.getMessage(
                     "general.cool_down",
                     hashMapOf("{TIME}" to ((Settings.commandsCoolDown - (System.currentTimeMillis() - Storage.commandCoolDown[player.uniqueId]!!)) / 1000))
@@ -275,18 +286,22 @@ object Utils {
         return "https://${Settings.domain}:${Settings.serverPort}"
     }
 
+    fun parsePlaceholder(player: Player?, string: String): String {
+        if (MelodyMine.instance.server.pluginManager.getPlugin("PlaceholderAPI") == null) return string
+        return PlaceholderAPI.setPlaceholders(player, string)
+    }
 
 
     fun sendMelodyFiglet() {
         val consoleSender = MelodyMine.instance.server.consoleSender
-        consoleSender.sendMessage("".toComponent())
-        consoleSender.sendMessage("<gradient:#F04FE7:#FFF4E4>    __  ___     __          __      __  ____          ".toComponent())
-        consoleSender.sendMessage("<gradient:#F04FE7:#FFF4E4>   /  |/  /__  / /___  ____/ /_  __/  |/  (_)___  ___ ".toComponent())
-        consoleSender.sendMessage("<gradient:#F04FE7:#FFF4E4>  / /|_/ / _ \\/ / __ \\/ __  / / / / /|_/ / / __ \\/ _ \\".toComponent())
-        consoleSender.sendMessage("<gradient:#F04FE7:#FFF4E4> / /  / /  __/ / /_/ / /_/ / /_/ / /  / / / / / /  __/".toComponent())
-        consoleSender.sendMessage("<gradient:#F04FE7:#FFF4E4>/_/  /_/\\___/_/\\____/\\__,_/\\__, /_/  /_/_/_/ /_/\\___/ ".toComponent())
-        consoleSender.sendMessage("<gradient:#F04FE7:#FFF4E4>                          /____/                      ".toComponent())
-        consoleSender.sendMessage("".toComponent())
+        consoleSender.sendComponent("")
+        consoleSender.sendComponent("<gradient:#F04FE7:#FFF4E4>    __  ___     __          __      __  ____          ")
+        consoleSender.sendComponent("<gradient:#F04FE7:#FFF4E4>   /  |/  /__  / /___  ____/ /_  __/  |/  (_)___  ___ ")
+        consoleSender.sendComponent("<gradient:#F04FE7:#FFF4E4>  / /|_/ / _ \\/ / __ \\/ __  / / / / /|_/ / / __ \\/ _ \\")
+        consoleSender.sendComponent("<gradient:#F04FE7:#FFF4E4> / /  / /  __/ / /_/ / /_/ / /_/ / /  / / / / / /  __/")
+        consoleSender.sendComponent("<gradient:#F04FE7:#FFF4E4>/_/  /_/\\___/_/\\____/\\__,_/\\__, /_/  /_/_/_/ /_/\\___/ ")
+        consoleSender.sendComponent("<gradient:#F04FE7:#FFF4E4>                          /____/                      ")
+        consoleSender.sendComponent("")
     }
 
 
