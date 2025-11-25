@@ -37,7 +37,7 @@ repositories {
     maven("https://repo.extendedclip.com/content/repositories/placeholderapi/")
 
     // Update checker
-    maven("https://repo.jeff-media.com/public/")
+    maven("https://maven.paulem.net/releases")
 
     // ProtocolLib
     maven("https://repo.dmulloy2.net/repository/public/")
@@ -57,7 +57,7 @@ dependencies {
     implementation("net.kyori:adventure-platform-bukkit:4.3.4")
     implementation("net.kyori:adventure-text-minimessage:4.17.0")
 
-    implementation("com.jeff_media:SpigotUpdateChecker:3.0.3")
+    implementation("com.jeff_media:SpigotUpdateChecker:3.0.4")
 
     // Socket Io
     implementation("io.socket:socket.io-client:2.1.1")
@@ -65,7 +65,7 @@ dependencies {
 
     implementation("com.zaxxer:HikariCP:4.0.3")
 
-    compileOnly("com.comphenix.protocol:ProtocolLib:5.1.0")
+    compileOnly("net.dmulloy2:ProtocolLib:5.4.0")
     implementation("org.slf4j:slf4j-api:1.7.25")
     implementation("ch.qos.logback:logback-core:1.5.12")
     implementation("ch.qos.logback:logback-classic:1.5.12")
@@ -214,10 +214,6 @@ publishing {
             name = "sayandevelopment-repo"
             url = uri("https://repo.sayandev.org/snapshots/")
 
-            credentials {
-                username = System.getenv("REPO_SAYAN_USER") ?: project.findProperty("repo.sayan.user") as String
-                password = System.getenv("REPO_SAYAN_TOKEN") ?: project.findProperty("repo.sayan.token") as String
-            }
         }
     }
 }

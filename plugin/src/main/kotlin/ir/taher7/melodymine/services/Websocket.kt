@@ -36,6 +36,10 @@ object Websocket {
                 Database.updateSocketPlayer()
             }
 
+            socket.on(Socket.EVENT_CONNECT_ERROR) { args ->
+                MelodyMine.instance.logger.severe("Websocket connect error: ${args.firstOrNull()}")
+            }
+
             socket.on(Socket.EVENT_DISCONNECT) {
                 MelodyMine.instance.logger.severe(Messages.getMessage("errors.websocket"))
                 Database.updateSocketPlayer()
