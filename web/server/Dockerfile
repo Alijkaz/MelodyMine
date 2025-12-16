@@ -1,5 +1,9 @@
 FROM node:18-alpine
 
+RUN apk add --no-cache \
+    openssl \
+    libc6-compat
+
 RUN npm install -g nodemon
 
 WORKDIR /app
