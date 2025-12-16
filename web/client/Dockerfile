@@ -6,7 +6,8 @@ COPY package.json package-lock.json ./
 
 COPY . .
 
-RUN npm install
+RUN apk add --no-cache openssl1.1-compat \
+    && npm install
 
 RUN npx prisma generate
 

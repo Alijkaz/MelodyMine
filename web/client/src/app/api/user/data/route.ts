@@ -41,7 +41,8 @@ export const GET = async () => {
             }
 
         } catch (err) {
-
+            console.error("Failed to load player data", err)
+            return new NextResponse(JSON.stringify({message: "Internal server error"}), {status: 500})
         }
     } else {
         return new NextResponse(JSON.stringify({message: "You are not authenticated!"}), {status: 401})
