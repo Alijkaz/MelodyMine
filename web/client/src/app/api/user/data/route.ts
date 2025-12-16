@@ -28,7 +28,7 @@ export const GET = async () => {
                     "player": player,
                     "socketURL": process.env.WEBSOCKET_URL,
                     "turnServer": {
-                        url: process.env.TURN_URL,
+                        urls: process.env.TURN_URL,
                         username: process.env.TURN_USERNAME,
                         credential: process.env.TURN_PASSWORD,
                     },
