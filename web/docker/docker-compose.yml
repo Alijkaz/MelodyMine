@@ -13,6 +13,7 @@ services:
       - TURN_URL=${TURN_URL}
       - TURN_USERNAME=${TURN_USERNAME}
       - TURN_PASSWORD=${TURN_PASSWORD}
+      - MAINTENANCE_MODE=${MAINTENANCE_MODE}
     restart: unless-stopped
 
   websocket_server:

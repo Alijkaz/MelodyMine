@@ -1,9 +1,14 @@
 import Image from 'next/image'
 import Hero3D from "@/components/Hero3D";
 import HomeStart from "@/components/HomeStart";
+import config from "@/config";
+
+// Ensure maintenance mode is evaluated at request time
+export const dynamic = "force-dynamic";
 
 
 export default async function Home() {
+    const maintenanceMode = (process.env.MAINTENANCE_MODE ?? "").toLowerCase() === "true";
 
     return (
         <div className="h-screen flex flex-col lg:flex-row items-center w-full text-right pt-20 lg:pt-0 pb-0 md:pb-[2rem]">
@@ -12,12 +17,24 @@ export default async function Home() {
                 <h1 className="text-[55px] sm:text-[74px] text-white font-bold">گیم آپ</h1>
                 <div className="flex items-center">
                     <Image src="/line.png" alt="line" width={40} height={5} className="hidden sm:block ml-3"/>
-                    <h2 className="text-xl text-[#DDB216]">به راحتی با دوستاتون تو ماینکرفت صحبت کنید :)</h2>
+                    <h2 className="text-xl text-[#DDB216]">
+                        {maintenanceMode ? "درحال بروزرسانی هستیم" : "به راحتی با دوستاتون تو ماینکرفت صحبت کنید :)"}
+                    </h2>
                 </div>
                 <p className="text-[20px] text-[#D3D3D3FF] text-justify">
-                    با وویس چت گیم آپ میتونید یک تجربه جدید از ماینکرفت داشته باشید که قبلا هیچوقت نداشتید! به راحتی روی شروع وویس چت کلیک کنید و وارد دنیای جدیدی از ماینکرفت بشید و با دوستانتون صحبت کنید.
+                    {maintenanceMode ? "برای بهبود تجربه شما در حال آماده‌سازی و به‌روزرسانی سیستم هستیم. به زودی برمی‌گردیم و دوباره کنار شما خواهیم بود." : "با وویس چت گیم آپ میتونید یک تجربه جدید از ماینکرفت داشته باشید که قبلا هیچوقت نداشتید! به راحتی روی شروع وویس چت کلیک کنید و وارد دنیای جدیدی از ماینکرفت بشید و با دوستانتون صحبت کنید."}
                 </p>
-                <HomeStart/>
+                {maintenanceMode ? (
+                    <p className="text-[16px] text-[#D3D3D3FF] text-justify">
+                        برای اطلاع از اخرین اخبار سرور میتوانید به{" "}
+                        <a className="text-[#DDB216] underline" href={config.contactUsLink} target="_blank" rel="noreferrer">
+                            دیسکورد ما
+                        </a>{" "}
+                        سر بزنید.
+                    </p>
+                ) : (
+                    <HomeStart/>
+                )}
             </div>
 
             {/*RIGHT SIDE*/}

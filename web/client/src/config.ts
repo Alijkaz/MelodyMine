@@ -1,4 +1,4 @@
 export default {
-    "contactUsLink": "https://discord.com/users/834175628742885516",
+    "contactUsLink": "https://discord.gg/QBkygGmN",
     "serverIp": "MC.GameUP.iR",
 }

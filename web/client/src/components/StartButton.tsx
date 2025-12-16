@@ -39,6 +39,7 @@ const StartButton = () => {
     const params = useSearchParams()
 
     useLayoutEffect(() => {
+        if (!user.secretKey) return
         let socket: Socket<DefaultEventsMap, DefaultEventsMap>
         if (params.has("start")) {
             route.replace("/hub")
@@ -100,7 +101,7 @@ const StartButton = () => {
             disconnectSocket()
         }
 
-    }, [])
+    }, [user.secretKey, params, route, setAutoStart])
 
 
     const handleStart = async () => {
